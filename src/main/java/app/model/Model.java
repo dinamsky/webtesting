@@ -33,13 +33,14 @@ public class Model {
                 .collect(Collectors.toList());
     }
     public List<String> listDatabase() {
-        List<String> result = new ArrayList<>();
+
         try {
             Class.forName("org.postgresql.Driver");
             String url = "jdbc:postgresql://localhost:5432/contactdb";
             String login = "postgres";
             String password = "bestpass";
             Connection con = DriverManager.getConnection(url, login, password);
+            List<String> result = new ArrayList<>();
 
             try {
                 Statement stmt = con.createStatement();
@@ -49,12 +50,16 @@ public class Model {
                 }
                 rs.close();
                 stmt.close();
+                System.out.println(result.toString());
+                return result;
             } finally {
                 con.close();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+return model.stream()
+        .map(User::getName)
+        .collect(Collectors.toList());
     }
 }
