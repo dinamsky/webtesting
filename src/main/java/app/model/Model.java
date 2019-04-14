@@ -1,11 +1,8 @@
 package app.model;
 
-import app.entities.User;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import app.entities.User;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,11 +24,7 @@ public class Model {
         model.add(user);
     }
 
-    public List<String> list() {
-        return model.stream()
-                .map(User::getName)
-                .collect(Collectors.toList());
-    }
+
     public List<String> listDatabase() {
 
         try {
@@ -61,5 +54,40 @@ public class Model {
 return model.stream()
         .map(User::getName)
         .collect(Collectors.toList());
+    }
+    public void addDatabase(User user) {
+
+        try {
+            Class.forName("org.postgresql.Driver");
+            String url = "jdbc:postgresql://localhost:5432/contactdb";
+            String login = "postgres";
+            String password = "bestpass";
+            Connection con = DriverManager.getConnection(url, login, password);
+            String query = "INSERT INTO JC_CONTACT ("
+                    + " contact_id,"
+                    + " first_name,"
+                    + " last_name,"
+                    + " phone,"
+                    + " email,"
+                    + " password ) VALUES ("
+                    + "null, ?, ?, ?, ?, ?, ?)";
+
+            try {
+                PreparedStatement stmt =  con.prepareStatement(query);
+                stmt.setString(1, user.getName());
+                stmt.setString(3, user.getLastName());
+                stmt.setString(4, user.getPhone());
+                stmt.setString(5, user.getEmail());
+                stmt.setString(6, user.getPassword());
+
+                int i = stmt.executeUpdate();
+
+            } finally {
+                con.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
